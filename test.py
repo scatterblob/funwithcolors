@@ -2,28 +2,12 @@
 import numpy as np
 import pygame
 import random
+from PIL import Image
 
 h, w = 800, 800
 border = 0
 N = 0
 leFrame = None
-
-
-def sin2d(x, y):
-    return np.sin(x) + np.cos(y)
-
-# def getFrame():
-#     """Generate next frame of simulation as numpy array"""
-#     global leFrame
-#     # Create data on first call only
-#     if leFrame is None:
-#         xx, yy = np.meshgrid(np.linspace(0,2*np.pi,h), np.linspace(0,2*np.pi,w))
-#         leFrame = sin2d(xx, yy)
-#         leFrame = 255*leFrame/leFrame.max()
-#
-#     # Just roll data for subsequent calls
-#     leFrame = np.roll(leFrame,(1,2),(0,1))
-#     return leFrame
 
 
 def create_random_image():
@@ -94,9 +78,6 @@ pygame.display.set_caption("Loooool die Drugs")
 done = False
 clock = pygame.time.Clock()
 
-# Get a font for rendering the frame number
-basicfont = pygame.font.SysFont(None, 32)
-
 
 while not done:
         for event in pygame.event.get():
@@ -113,11 +94,7 @@ while not done:
         surface = pygame.surfarray.make_surface(npimage)
         screen.blit(surface, (border, border))
 
-        # Display and update frame counter
-        # text = basicfont.render('Frame: ' + str(N), True, (255, 0, 0), (255, 255, 255))
-        # screen.blit(text, (border,h+border))
         N = N + 1
-
 
         pygame.display.flip()
         clock.tick(30)

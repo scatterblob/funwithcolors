@@ -3,7 +3,7 @@ import numpy as np
 import pygame
 import random
 
-h, w = 300, 800
+h, w = 800, 800
 border = 0
 N = 0
 leFrame = None
@@ -62,17 +62,27 @@ def sort_horizontal(a, color=1):
         for y in range(start_y, h):
             if a[x, y, color] < mi:
                 mi = a[x, y, color]
-                min_index = x
+                min_index = y
         a[x, min_index, color], a[x, start_y, color] = a[x, start_y, color], a[x, min_index, color]
     return a
 
 
 def get_frame():
     global leFrame, start_x, start_y
+    hor, vert = False, False
     if leFrame is None:
         leFrame = create_random_image()
-    leFrame = sort_vertical(leFrame)
-    leFrame = sort_horizontal(leFrame)
+    if not vert:
+        try:
+            leFrame = sort_vertical(leFrame)
+        except IndexError:
+            vert = True
+    if not hor:
+        try:
+            leFrame = sort_horizontal(leFrame)
+        except IndexError:
+            hor = True
+
     start_x = start_x + 1 if start_x < w else start_x
     start_y = start_y + 1 if start_y < h else start_y
     return leFrame

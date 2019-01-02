@@ -11,7 +11,7 @@ import socket
 # Init       #
 ##############
 
-h, w, size = 780, 1200, 12
+h, w, size = 780, 1200, 16
 start_x, start_y = int((w - size) / 2), int((h - size) / 2)
 end_x, end_y = int((w + size) / 2), int((h + size) / 2)
 color = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
@@ -33,17 +33,6 @@ def connect():
 def send_request(sock, msg, response=False):
     sock.sendall(msg.encode())
     return sock.recv(16) if response else msg
-
-
-def send_mass_request(array):
-    array = get_formatted_pixels(array, 100, 100)
-    msg = ''.join(array)
-    print(msg)
-    print(send_request(s, msg, True))
-
-
-def send_pixel(x, y, c):
-    send_request(s, 'PX {} {} {}\n'.format(x, y, c))
 
 
 def get_formatted_pixels(pic, offset_x, offset_y):
@@ -69,7 +58,7 @@ def create_array():
     return np.zeros((w, h, 3), dtype=np.uint8)
 
 
-def change_direction(x, y):
+def random__lame_direction(x, y):
     if x != 0:
         x = 0
         y = -1 if random.randint(0, 1) else 1
@@ -78,6 +67,12 @@ def change_direction(x, y):
         y = 0
         x = -1 if random.randint(0, 1) else 1
         return x, y
+
+
+def random_fun_direction(x, y):
+    x += random.randint(-10, 10)
+    y += random.randint(-10, 10)
+    return x, y
 
 
 def change_color(c):
@@ -97,7 +92,7 @@ def update(frame=None):
 
 def draw(frame):
     global start_x, start_y, end_x, end_y
-    print(start_x, end_x, start_y, end_y)
+    print(start_x, end_x, start_y, end_y, dir_x, dir_y)
     m = ""
     start_x = (start_x + dir_x) % w
     start_y = (start_y + dir_y) % h
@@ -124,6 +119,15 @@ while not done:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        dir_x -= 1
+                    if event.key == pygame.K_RIGHT:
+                        dir_x += 1
+                    if event.key == pygame.K_UP:
+                        dir_y -= 1
+                    if event.key == pygame.K_DOWN:
+                        dir_y += 1
 
         # Get a numpy array to display from the simulation
         if N == 0:
@@ -138,8 +142,6 @@ while not done:
         pygame.display.flip()
         N = N + 1
 
-        if N % M == 0:
-            dir_x, dir_y = change_direction(dir_x, dir_y)
-            M = random.randint(10, 200)
+        dir_x, dir_y = random_fun_direction(dir_x, dir_y)
 
         clock.tick(60)
